@@ -3,14 +3,19 @@ package com.topic2.android.notes.ui.components.screens
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Switch
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -194,4 +199,130 @@ fun SaveNoteTopAppBarPreview() {
         onOpenColorPickerClick = {},
         onDeleteNoteClick = {}
     )
+}
+
+@Composable
+private fun PickedColor(color: ColorModel) {
+    Row(
+        modifier = Modifier
+            .padding(8.dp)
+            .padding(top = 16.dp)
+    ) {
+        Text(
+            text = "Picked color", modifier = Modifier
+                .weight(1f)
+                .align(Alignment.CenterVertically)
+        )
+        NoteColor(
+            color = Color.fromHex(color.hex),
+            size = 40.dp,
+            border = 1.dp,
+            modifier = Modifier.padding(4.dp)
+        )
+    }
+}
+
+@Preview @Composable
+fun PickedColorPreview() {
+    PickedColor(color = ColorModel.DEFAULT)
+}
+
+@Composable
+private fun NoteCheckOption(
+    isChecked: Boolean,
+    onCheckedChange: (Boolean) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .padding(8.dp)
+            .padding(top = 16.dp)
+    ) {
+        Text(
+            text = "Can note be checked off?",
+            modifier = Modifier.weight(1f)
+        )
+        Switch(
+            checked = isChecked,
+            onCheckedChange = onCheckedChange,
+            modifier = Modifier.padding(start = 8.dp)
+        )
+    }
+}
+
+@Preview @Composable
+fun NoteCheckOptionPreview() {
+    NoteCheckOption(isChecked = false) {}
+}
+
+@Composable
+private fun ContentTextField(
+    modifier: Modifier = Modifier,
+    label: String,
+    text: String,
+    onTextChange: (String) -> Unit
+) {
+    TextField(
+        value = text,
+        onValueChange = onTextChange,
+        label = {Text(label)},
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp),
+        colors = TextFieldDefaults.textFieldColors(
+            backgroundColor = MaterialTheme.colors.surface
+        )
+    )
+}
+
+@Preview @Composable
+fun ContentTextFieldPreview() {
+    ContentTextField(
+        label = "title",
+        text = "",
+        onTextChange = {}
+    )
+}
+
+@Composable
+private fun SaveNoteContent(
+    note: NoteModel,
+    onNoteChange: (NoteModel) -> Unit
+) {
+    Column(Modifier.fillMaxSize()) {
+        ContentTextField(
+            label = "Title",
+            text = note.title,
+            onTextChange = { newTitle ->
+                onNoteChange.invoke(note.copy(title = newTitle))
+            }
+        )
+        ContentTextField(
+            modifier = Modifier
+                .heightIn(max = 240.dp)
+                .padding(top = 16.dp),
+            label = "Body",
+            text = note.content,
+            onTextChange = { newContent ->
+                onNoteChange.invoke(note.copy(content = newContent))
+            }
+        )
+
+        val canBeCheckedOff: Boolean = note.isCheckedOff != null
+
+        NoteCheckOption(
+            isChecked = canBeCheckedOff,
+            onCheckedChange = { canBeCheckedOffNewValue ->
+                val isCheckedOff: Boolean? = if (canBeCheckedOffNewValue) false else null
+                onNoteChange.invoke(note.copy(isCheckedOff = isCheckedOff))
+            }
+        )
+        PickedColor(color = note.color)
+    }
+}
+
+@Preview @Composable
+fun SaveNoteContentPreview() {
+    SaveNoteContent(
+        note = NoteModel(title = "Title", content = "Content")
+    ) {}
 }
