@@ -1,4 +1,3 @@
-
 package com.topic2.android.notes.ui.components
 
 import androidx.compose.foundation.background
