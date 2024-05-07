@@ -1,9 +1,10 @@
-package components
+package com.topic2.android.notes.ui.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
@@ -20,8 +21,7 @@ fun NoteColor(
     modifier: Modifier,
     color: Color,
     size: Dp,
-    border: Dp,
-    padding: Dp
+    border: Dp
 ) {
     Box(
         modifier = modifier
@@ -44,7 +44,6 @@ fun NoteColorPreview() {
         modifier = Modifier,
         color = Color.Red,
         size = 40.dp,
-        border = 2.dp,
-        padding = 4.dp
+        border = 2.dp
     )
 }
